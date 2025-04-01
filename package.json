@@ -1,13 +1,16 @@
 {
     "name": "fingerprint-viz-aqi",
     "version": "0.1.0",
+    "homepage": "http://aaloksg.github.io/fingerprint-viz-aqi",
     "private": true,
     "scripts": {
         "dev": "next dev",
         "https": "local-ssl-proxy --key cert.key  --cert cert.crt  --source 3001 --target 3000",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build"
     },
     "dependencies": {
         "@headlessui/react": "^2.2.0",
@@ -33,6 +36,7 @@
         "eslint": "^9",
         "eslint-config-next": "15.2.1",
         "eslint-config-prettier": "10.0.2",
+        "gh-pages": "^6.3.0",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "0.6.11",
         "tailwindcss": "^4",
