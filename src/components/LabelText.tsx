@@ -58,7 +58,7 @@ const LabelText = ({
                 fill={textColor}
                 fillOpacity={opacity ?? 1}
                 clipPath={clipPath}
-                className="font-light cursor-default text-xs sm:text-sm md:text-base lg:text-lg transition-all"
+                className="font-light capitalize cursor-default text-xs sm:text-sm md:text-base lg:text-lg transition-all select-none"
             >
                 {text}
             </text>

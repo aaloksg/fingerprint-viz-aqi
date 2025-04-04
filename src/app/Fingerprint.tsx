@@ -76,7 +76,10 @@ const Fingerprint = ({
                     </div>
                 ) : (
                     <>
-                        <div ref={svgRef} className="relative w-full h-full">
+                        <div
+                            ref={svgRef}
+                            className="relative w-full h-full flex items-center justify-center"
+                        >
                             <svg width="100%" height="100%" id="ContainerSVG">
                                 <defs id="F1DataVisDefs"></defs>
                                 <AqiPrint side="left" data={leftData} />

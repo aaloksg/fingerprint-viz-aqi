@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { JSX, useId } from 'react';
 import Loader from '../Loader';
 import { MdClear } from 'react-icons/md';
+import ElementsUnfound from '../ElementsUnfound';
 
 export type PopOverOption = {
     id: string;
@@ -13,7 +14,7 @@ export type PopOverOption = {
 type DropDownProps<T> = {
     query: UseStateObjectReturn<string>;
     placeholder: string;
-    options: T[];
+    options: T[] | undefined;
     select: (selectedOption: T) => void;
 };
 
@@ -95,14 +96,14 @@ const PopOverOptions = <T extends PopOverOption>({
                                     className={clsx(
                                         ' w-80 max-h-80 max-w-full min-h-64 overflow-y-auto',
                                         'flex flex-row items-center',
-                                        options.length
+                                        options?.length
                                             ? 'flex-wrap'
                                             : query.value.length
                                               ? 'justify-center'
                                               : 'invisible pointer-events-none'
                                     )}
                                 >
-                                    {(options.length &&
+                                    {(options?.length &&
                                         options.map((option) => (
                                             <button
                                                 key={`${id}-option-${option.id}`}
@@ -117,7 +118,10 @@ const PopOverOptions = <T extends PopOverOption>({
                                                 {option.value}
                                             </button>
                                         ))) ||
-                                        (query.value.length && <Loader />)}
+                                        (query.value.length &&
+                                            ((!options && (
+                                                <ElementsUnfound />
+                                            )) || <Loader />))}
                                 </div>
                             </div>
                         )}

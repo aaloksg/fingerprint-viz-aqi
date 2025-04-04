@@ -3,28 +3,8 @@ import { JSX, useContext } from 'react';
 import FingerprintLayoutContext from '@/contexts/FingerPrintLayoutContext';
 import LabelText from './LabelText';
 import ActiveQualityContext from '@/contexts/ActiveQualityContext';
+import getColourFromSafetyLevel from '@/utils/getColourFromSafetyLevel';
 
-const getColourFromSafetyLevel = (value: number): string => {
-    if (value > 300) {
-        return '#7e0023';
-    }
-    if (value > 200) {
-        return '#8f3f97';
-    }
-    if (value > 150) {
-        return '#ff0000';
-    }
-    if (value > 100) {
-        return '#ff7e00';
-    }
-    if (value > 50) {
-        return '#ffff00';
-    }
-
-    return '#00e400';
-};
-
-const TICK_COLOR = '#8b8b8b';
 const AQI_LABEL_BUFFER = 40;
 const AQI_LABEL_PERC = 0.2;
 
@@ -61,34 +41,6 @@ const AqiLabel = ({
             onPointerDown={() => setActiveQuality(data.name)}
             onPointerUp={() => setActiveQuality('')}
         >
-            <line
-                x1={side === 'left' ? cx - lineWidth : cx}
-                x2={side === 'left' ? cx : cx + lineWidth}
-                y1={y}
-                y2={y}
-                stroke={strokeColor}
-                strokeOpacity="0"
-                strokeWidth="12"
-                rx={ry / 2}
-                ry={ry}
-                clipPath={clipPath}
-            ></line>
-            <line
-                x1={side === 'left' ? cx - lineWidth : cx}
-                x2={side === 'left' ? cx : cx + lineWidth}
-                y1={y}
-                y2={y}
-                stroke={data.name === activeQuality ? strokeColor : TICK_COLOR}
-                strokeOpacity={
-                    !activeQuality || data.name === activeQuality ? 1 : 0.4
-                }
-                strokeWidth="2"
-                strokeDasharray="5,5"
-                rx={ry / 2}
-                ry={ry}
-                clipPath={clipPath}
-                className="transition-all duration-500"
-            ></line>
             {side === 'left' && (
                 <LabelText
                     x={Math.max(

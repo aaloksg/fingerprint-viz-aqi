@@ -24,8 +24,12 @@ const FingerprintUI = ({
     rightName,
     children,
 }: PropsWithChildren<FingerprintUIProps>): JSX.Element => {
-    const [leftRegions, setLeftRegions] = useState([] as AqiOption[]);
-    const [rightRegions, setRightRegions] = useState([] as AqiOption[]);
+    const [leftRegions, setLeftRegions] = useState<AqiOption[] | undefined>(
+        [] as AqiOption[]
+    );
+    const [rightRegions, setRightRegions] = useState<AqiOption[] | undefined>(
+        [] as AqiOption[]
+    );
     const leftQuery = useStateObject('');
     const rightQuery = useStateObject('');
 
@@ -35,11 +39,14 @@ const FingerprintUI = ({
                 setLeftRegions([]);
                 return;
             }
+            if (!leftRegions) {
+                setLeftRegions([]);
+            }
 
             AqiApi.searchStation(leftQuery.value).then((response) => {
                 console.log(`Stations found: ${response}`);
                 if (!response?.length) {
-                    setLeftRegions([]);
+                    setLeftRegions(undefined);
                     return;
                 }
                 setLeftRegions(
@@ -61,9 +68,12 @@ const FingerprintUI = ({
                 setRightRegions([]);
                 return;
             }
+            if (!rightRegions) {
+                setRightRegions([]);
+            }
             AqiApi.searchStation(rightQuery.value).then((response) => {
                 if (!response?.length) {
-                    setRightRegions([]);
+                    setRightRegions(undefined);
                     return;
                 }
                 setRightRegions(
@@ -104,12 +114,12 @@ const FingerprintUI = ({
             </div>
             <div className="w-full flex items-start text-base sm:text-lg md:text-xl font-extralight text-blue-400">
                 <div className="grow flex justify-center max-w-1/2 text-center ">
-                    <span className="pr-4 md:pr-6 lg:pr-10 transition ">
+                    <span className="pr-4 md:pr-6 lg:pr-10 transition capitalize select-none">
                         {leftName}
                     </span>
                 </div>
                 <div className="grow flex justify-center max-w-1/2 text-center ">
-                    <span className="pl-4 md:pl-6 lg:pl-10 transition">
+                    <span className="pl-4 md:pl-6 lg:pl-10 transition capitalize select-none">
                         {rightName}
                     </span>
                 </div>

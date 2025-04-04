@@ -8,32 +8,11 @@ import {
     useState,
 } from 'react';
 import ActiveQualityContext from '@/contexts/ActiveQualityContext';
+import getColourFromSafetyLevel from '@/utils/getColourFromSafetyLevel';
 
 const STROKE_WIDTH = 2;
-const STROKE_BOUNDS = 10;
+const STROKE_BOUNDS = 18;
 export const QUALITY_PRINT_WIDTH = STROKE_WIDTH + STROKE_BOUNDS;
-
-export const RADIUS_X_FACTOR = 0.6;
-
-const getColourFromSafetyLevel = (value: number): string => {
-    if (value > 300) {
-        return '#cb0000'; // #7e0023
-    }
-    if (value > 200) {
-        return '#8f3f97'; // #660099
-    }
-    if (value > 150) {
-        return '#ff0000'; // #cc0033
-    }
-    if (value > 100) {
-        return '#ff7e00'; // #ff9933
-    }
-    if (value > 50) {
-        return '#ffff00'; // #ffde33
-    }
-
-    return '#00e400'; // #009966
-};
 
 type AqiQualityProps = {
     side: 'left' | 'right';
@@ -42,6 +21,7 @@ type AqiQualityProps = {
     cy: number;
     ry: number;
     clipPath: string;
+    xRadiusFactor: number;
 };
 
 const AqiQuality = ({
@@ -51,6 +31,7 @@ const AqiQuality = ({
     ry,
     clipPath,
     data,
+    xRadiusFactor,
 }: AqiQualityProps): JSX.Element => {
     const isLeft = side === 'left';
     const strokeColor = getColourFromSafetyLevel(data.value);
@@ -87,12 +68,22 @@ const AqiQuality = ({
         calculateEllipseBorder();
     });
 
+    const emphasize = (event: React.PointerEvent): void => {
+        event.preventDefault();
+        setActiveQuality(data.name);
+    };
+
+    const deEmphasize = (event: React.PointerEvent): void => {
+        event.preventDefault();
+        setActiveQuality('');
+    };
+
     return (
         <g
-            onPointerEnter={() => setActiveQuality(data.name)}
-            onPointerLeave={() => setActiveQuality('')}
-            onPointerDown={() => setActiveQuality(data.name)}
-            onPointerUp={() => setActiveQuality('')}
+            onPointerEnter={emphasize}
+            onPointerLeave={deEmphasize}
+            onPointerDown={emphasize}
+            onPointerUp={deEmphasize}
         >
             <ellipse
                 cx={cx}
@@ -101,7 +92,7 @@ const AqiQuality = ({
                 stroke={strokeColor}
                 strokeOpacity={0}
                 strokeWidth={QUALITY_PRINT_WIDTH}
-                rx={ry * RADIUS_X_FACTOR}
+                rx={ry * xRadiusFactor}
                 ry={ry}
                 clipPath={clipPath}
                 strokeDasharray={strokeDasharray}
@@ -117,7 +108,7 @@ const AqiQuality = ({
                     !activeQuality || activeQuality === data.name ? 1 : 0.2
                 }
                 strokeWidth={STROKE_WIDTH}
-                rx={ry * RADIUS_X_FACTOR}
+                rx={ry * xRadiusFactor}
                 ry={ry}
                 clipPath={clipPath}
                 className="transition-all duration-500"

@@ -1,13 +1,16 @@
 import { type AqiComparativeData } from '@/definitions/interfaces';
-import AqiQuality, { QUALITY_PRINT_WIDTH, RADIUS_X_FACTOR } from './AqiQuality';
+import AqiQuality, { QUALITY_PRINT_WIDTH } from './AqiQuality';
 import { JSX, useContext } from 'react';
 import FingerprintLayoutContext from '@/contexts/FingerPrintLayoutContext';
 import AqiLabel from './AqiLabel';
+import AqiAxes from './AqiAxes';
 
 type AqiPrintProps = {
     side: 'left' | 'right';
     data: AqiComparativeData;
 };
+
+export const RADIUS_X_FACTOR = 0.6;
 
 const MIN_Y_RADIUS = QUALITY_PRINT_WIDTH / 2;
 const PADDING_B = 10;
@@ -24,10 +27,12 @@ const AqiPrint = ({ side, data }: AqiPrintProps): JSX.Element => {
 
     const centerX = width;
     const centerY = height / 2;
-    let stYRadius = height / 2 - PADDING_B;
+    const stYRadius = height / 2 - PADDING_B;
 
-    if (stYRadius * RADIUS_X_FACTOR > width) {
-        stYRadius = width / RADIUS_X_FACTOR;
+    let xRadiusFactor = RADIUS_X_FACTOR;
+
+    if (stYRadius * xRadiusFactor >= width) {
+        xRadiusFactor = (0.8 * width) / stYRadius;
     }
     const numQualities = data.data.length;
     // const minRadius = MIN_Y_RADIUS_FACTOR * (height / 2);
@@ -47,8 +52,8 @@ const AqiPrint = ({ side, data }: AqiPrintProps): JSX.Element => {
                 ></rect>
             </clipPath>
             {data?.data.map((quality, index) => (
-                <AqiLabel
-                    key={`${data.name}-${quality.name}`}
+                <AqiAxes
+                    key={`axis-${data.name}-${quality.name}`}
                     data={quality}
                     side={side}
                     cx={centerX}
@@ -59,7 +64,19 @@ const AqiPrint = ({ side, data }: AqiPrintProps): JSX.Element => {
             ))}
             {data?.data.map((quality, index) => (
                 <AqiQuality
-                    key={`${data.name}-${quality.name}`}
+                    key={`quality-${data.name}-${quality.name}`}
+                    data={quality}
+                    side={side}
+                    cx={centerX}
+                    cy={centerY}
+                    ry={stYRadius - yDeltaRadius * index}
+                    clipPath={clipPath}
+                    xRadiusFactor={xRadiusFactor}
+                />
+            ))}
+            {data?.data.map((quality, index) => (
+                <AqiLabel
+                    key={`labels-${data.name}-${quality.name}`}
                     data={quality}
                     side={side}
                     cx={centerX}
